@@ -1,0 +1,120 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #0f172a;
+  color: white;
+}
+
+nav {
+  background-color: #1e293b;
+  padding: 16px;
+  border-bottom: 1px solid #334155;
+  display: flex;
+  gap: 24px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+}
+nav a {
+  color: #94a3b8;
+  text-decoration: none;
+  font-weight: 500;
+}
+nav a:hover {
+  color: white;
+}
+nav a.active {
+  color: #22d3ee;
+}
+
+.page-container {
+  padding: 40px;
+  display: grid;
+  gap: 40px;
+  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+}
+
+.job-card {
+  background-color: #1e293b;
+  border: 2px solid #334155;
+  border-radius: 18px;
+  padding: 40px;
+  transition: border 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.35);
+}
+
+.job-card:hover {
+  border-color: #22d3ee;
+  transform: translateY(-6px);
+}
+
+.job-card h2 {
+  font-size: 1.5rem;
+  color: #67e8f9;
+  margin-bottom: 12px;
+}
+
+.job-card .company {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #67e8f9;
+  margin-bottom: 14px;
+}
+
+.job-card .desc {
+  font-size: 1.1rem;
+  color: #e2e8f0;
+  margin-bottom: 16px;
+}
+
+.job-card .link {
+  color: #a78bfa;
+  font-size: 1rem;
+  font-weight: 500;
+  text-decoration: underline;
+}
+.job-card .link:hover {
+  color: #c4b5fd;
+}
+
+.actions {
+  margin-top: 24px;
+  display: flex;
+  gap: 16px;
+  font-size: 2rem; /* icon size */
+}
+
+button {
+    border: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    border-radius: 12px;
+    transition: all 0.2s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem; /* <-- this controls icon size */
+  }
+  
+
+.hover-text-green {
+  background-color: #16a34a;
+  color: white;
+}
+.hover-text-green:hover {
+  background-color: #22c55e;
+}
+
+.hover-text-red {
+  background-color: #dc2626;
+  color: white;
+}
+.hover-text-red:hover {
+  background-color: #f87171;
+}
+
+.hover-text-yellow {
+  background-color: #facc15;
+  color: black;
+}
+.hover-text-yellow:hover {
+  background-color: #fde047;
+}
