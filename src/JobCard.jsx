@@ -1,15 +1,44 @@
 import React from "react";
-import { FaCheckCircle, FaTimesCircle, FaExclamationCircle } from "react-icons/fa";
+import { getAuth } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
+import db from "./firebase";
+import { useToast } from "./ToastContext";
 
-export default function JobCard({ job }) {
-  function updateJob(id, action) {
-    fetch(`http://34.176.141.5:5001/api/jobs/${encodeURIComponent(id)}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action, state: "Old" })
-    })
-      .then(res => res.json())
-      .then(() => window.location.reload());
+export default function JobCard({ job, removeJob }) {
+  const user = getAuth().currentUser;
+  const toast = useToast();
+
+  async function updateJob(id, action) {
+    if (!user) {
+      toast("Please login to track jobs.");
+      return;
+    }
+
+    const userActionRef = doc(db, "users", user.uid, "job_actions", id);
+    await setDoc(userActionRef, { action, state: "Old" });
+    removeJob(id);
+  }
+
+  function ActionButton({ label, onClick, bgColor }) {
+    return (
+      <button
+        onClick={onClick}
+        style={{
+          backgroundColor: bgColor,
+          color: bgColor === "#facc15" ? "#000" : "#fff",
+          padding: "8px 16px",
+          border: "none",
+          borderRadius: "6px",
+          cursor: "pointer",
+          fontWeight: "500",
+          fontSize: "15px"
+        }}
+        onMouseOver={e => (e.currentTarget.style.opacity = "0.85")}
+        onMouseOut={e => (e.currentTarget.style.opacity = "1")}
+      >
+        {label}
+      </button>
+    );
   }
 
   return (
@@ -21,46 +50,30 @@ export default function JobCard({ job }) {
         View Job
       </a>
 
-      <div className="actions">
+      <div className="actions" style={{ display: "flex", gap: "12px", marginTop: "16px" }}>
         {job.state === "New" && (
           <>
-            <button onClick={() => updateJob(job.id, "Priority")} className="hover-text-green">
-              <FaCheckCircle />
-            </button>
-            <button onClick={() => updateJob(job.id, "Not interested")} className="hover-text-red">
-              <FaTimesCircle />
-            </button>
-            <button onClick={() => updateJob(job.id, "Maybe")} className="hover-text-yellow">
-              <FaExclamationCircle />
-            </button>
+            <ActionButton label="Interested" onClick={() => updateJob(job.id, "Priority")} bgColor="#16a34a" />
+            <ActionButton label="Not Interested" onClick={() => updateJob(job.id, "Not interested")} bgColor="#dc2626" />
+            <ActionButton label="Maybe" onClick={() => updateJob(job.id, "Maybe")} bgColor="#facc15" />
           </>
         )}
 
         {job.state === "Old" && job.action === "Priority" && (
           <>
-            <button onClick={() => updateJob(job.id, "Applied")} className="hover-text-green">
-              <FaCheckCircle />
-            </button>
-            <button onClick={() => updateJob(job.id, "Maybe")} className="hover-text-yellow">
-              <FaExclamationCircle />
-            </button>
+            <ActionButton label="Applied" onClick={() => updateJob(job.id, "Applied")} bgColor="#16a34a" />
+            <ActionButton label="Maybe" onClick={() => updateJob(job.id, "Maybe")} bgColor="#facc15" />
           </>
         )}
 
         {job.state === "Old" && job.action === "Not interested" && (
-          <button onClick={() => updateJob(job.id, "Maybe")} className="hover-text-yellow">
-            <FaExclamationCircle />
-          </button>
+          <ActionButton label="Maybe" onClick={() => updateJob(job.id, "Maybe")} bgColor="#facc15" />
         )}
 
         {job.state === "Old" && job.action === "Maybe" && (
           <>
-            <button onClick={() => updateJob(job.id, "Priority")} className="hover-text-green">
-              <FaCheckCircle />
-            </button>
-            <button onClick={() => updateJob(job.id, "Not interested")} className="hover-text-red">
-              <FaTimesCircle />
-            </button>
+            <ActionButton label="Interested" onClick={() => updateJob(job.id, "Priority")} bgColor="#16a34a" />
+            <ActionButton label="Not Interested" onClick={() => updateJob(job.id, "Not interested")} bgColor="#dc2626" />
           </>
         )}
       </div>
