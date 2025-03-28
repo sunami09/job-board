@@ -39,11 +39,14 @@ export default function Page({ filter }) {
         );
       }
 
+      // ✅ Sort by 'created' date descending
+      jobList.sort((a, b) => (b.created || "").localeCompare(a.created || ""));
+
       setJobs(jobList);
     };
 
     fetchJobs();
-  }, [user, reloadTrigger]); // 🔁 triggers reload when updated
+  }, [user, reloadTrigger]);
 
   const filtered = jobs.filter(filter);
 
