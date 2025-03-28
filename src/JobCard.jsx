@@ -4,7 +4,7 @@ import { doc, setDoc } from "firebase/firestore";
 import db from "./firebase";
 import { useToast } from "./ToastContext";
 
-export default function JobCard({ job, removeJob }) {
+export default function JobCard({ job, removeJob, triggerReload }) {
   const user = getAuth().currentUser;
   const toast = useToast();
 
@@ -16,7 +16,9 @@ export default function JobCard({ job, removeJob }) {
 
     const userActionRef = doc(db, "users", user.uid, "job_actions", id);
     await setDoc(userActionRef, { action, state: "Old" });
-    removeJob(id);
+
+    removeJob(id);         // visually remove
+    triggerReload();       // reload latest state
   }
 
   function ActionButton({ label, onClick, bgColor }) {

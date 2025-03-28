@@ -7,6 +7,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 export default function Page({ filter }) {
   const [jobs, setJobs] = useState([]);
   const [user, setUser] = useState(null);
+  const [reloadTrigger, setReloadTrigger] = useState(0);
 
   useEffect(() => {
     const auth = getAuth();
@@ -42,7 +43,7 @@ export default function Page({ filter }) {
     };
 
     fetchJobs();
-  }, [user]);
+  }, [user, reloadTrigger]); // 🔁 triggers reload when updated
 
   const filtered = jobs.filter(filter);
 
@@ -54,12 +55,14 @@ export default function Page({ filter }) {
         </p>
       ) : (
         filtered.map(job => (
-          <JobCard key={job.id} job={job} removeJob={id => {
-            setJobs(prev => prev.filter(j => j.id !== id));
-          }} />
+          <JobCard
+            key={job.id}
+            job={job}
+            removeJob={id => setJobs(prev => prev.filter(j => j.id !== id))}
+            triggerReload={() => setReloadTrigger(r => r + 1)}
+          />
         ))
       )}
     </div>
   );
-  
 }
